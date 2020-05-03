@@ -1,0 +1,10 @@
+{
+    "sqltools.connections": [
+        {
+            "database": "${workspaceFolder}/predictions.db",
+            "dialect": "SQLite",
+            "name": "predictions"
+        }
+    ],
+    "sqltools.useNodeRuntime": true
+}

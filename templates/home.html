@@ -10,37 +10,166 @@
   <!-- Bootstrap CSS -->
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
     integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-  <link rel="stylesheet" href="/static/home12.css">
+  <link rel="stylesheet" href="/static/home.css">
 </head>
 
 <body>
-  <div class="imgarea">
-    <img src="/static/images/3732913.jpg" class="img-fluid" alt="Responsive image">
+  <div id='content'>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light"> 
+      <a class="navbar-brand" href="#">Cat or Dog by Deep Learning</a>
+      <div class="collapse navbar-collapse" style="margin-left:30%;" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item active">
+            <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/howitworks">How it works</a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+    <div class="content">
+      <div class=" header">
+        <div class="row d-flex justify-content-center">
+          <h2>HAVE YOU EVER WONDER YOUR PET IS</h2>
+        </div>
+        <div class="row d-flex justify-content-center">
+          <h1>CAT or DOG?</h1>
+        </div>
+        <div class="row d-flex justify-content-center">
+          <h2>DEEP LEARNING WILL HELP YOU!</h2>
+        </div>
+        <div class="row d-flex justify-content-center mt-5">
+          <form action='/' method="Post" enctype="multipart/form-data">
+            <div class="d-flex justify-content-center">
+              <label for="image_uploads">UPLOAD YOUR PET IMAGE HERE!</label>
+              <input type="file" id="image_uploads" name="file" accept=".jpg, .jpeg, .png" multiple>
+            </div>
+            <div class="preview">
+              <p style="padding:10px;background:white; color:black;border-radius: 5px;">No files currently selected for
+                upload</p>
+            </div>
+            <div class="d-flex justify-content-center">
+              <button type="submit" class="btn btn-primary" onclick="loading();">SUBMIT</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div class="container mt-5">
+      <p style="color: white; font-size:20px ; font-weight:800;">RECENTLY UPLOADED</p>
+      <div class="card-deck">
+        {% for pic in recent_pic%}
+        <div class="card shadow-custom hover-shadow">
+          <img class="card-img-top" src="/static/images/upload/{{pic[0]}}" alt="Card image cap"">
+        {% if pic[1] > 0.5 %}
+        <div class=" card-body">
+          <h5 class="card-title" style="text-align: center;">CAT</h5>
+          <p class="card-text" style="text-align: center;">Confident level: {{(pic[1]*100)|round(2,'floor')}}%</p>
+        </div>
+        <div class="card-footer">
+          <small class="text-muted">Updated at {{pic[3]}}</small>
+        </div>
+        {% else %}
+        <div class="card-body">
+          <h5 class="card-title" style="text-align: center;">DOG</h5>
+          <p class="card-text" style="text-align: center;">Confident level: {{(100-pic[1]*100)|round(2,'floor')}}%</p>
+        </div>
+        <div class="card-footer">
+          <small class="text-muted">Updated at {{pic[3]}}</small>
+        </div>
+        {% endif %}
+      </div>
+      {% endfor%}
+    </div>
   </div>
-  <div class="container content shadow-custom p-4">
-    <div class="row d-flex justify-content-center">
-      <h2>HAVE YOU EVER WONDER YOUR PET IS</h2>
-    </div>
-    <div class="row d-flex justify-content-center">
-      <h1>CAT or DOG?</h1>
-    </div>
-    <div class="row d-flex justify-content-center">
-      <h2>PLEASE UPLOAD YOUR PET IMAGE!</h2>
-    </div>
-    <div class="row d-flex justify-content-center">
-      <form action="/" enctype=multipart/form-data method="POST">
-        <div class='row d-flex justify-content-center'>
-          <div class="form-group d-flex justify-content-center">
-            <input type="file" name="file" class="form-control-file" id="exampleFormControlFile1">
-          </div>
-        </div>
-        <div class='row d-flex justify-content-center'>
-          <button type="submit" class="btn btn-primary">Submit</button>
-        </div>
-      </form>
-    </div>
+  <footer class="mt-5">
+    Tonga Class @2020. All rights resersed
+  </footer>
+  </div>
+  <div id="loading" class='loader' style="display: none;">
+    <div class='bg'></div>
+    <h2>ANALYZING...</h2>
   </div>
   <!-- Optional JavaScript -->
+  <script>// <![CDATA[
+    function loading() {
+      $("#content").hide();
+      var y = document.getElementById("loading");
+      if (y.style.display === "none") {
+        y.style.display = "flex";
+      } else {
+        y.style.display = "none";
+      }
+    }
+// ]]></script>
+  <script>
+    const input = document.querySelector('input');
+    const preview = document.querySelector('.preview');
+
+    input.style.opacity = 0;
+    input.addEventListener('change', updateImageDisplay);
+
+    function updateImageDisplay() {
+      while (preview.firstChild) {
+        preview.removeChild(preview.firstChild);
+      }
+
+      const curFiles = input.files;
+      if (curFiles.length === 0) {
+        const para = document.createElement('p');
+        para.textContent = 'No files currently selected for upload';
+        preview.appendChild(para);
+      } else {
+        const list = document.createElement('ol');
+        preview.appendChild(list);
+
+        for (const file of curFiles) {
+          const listItem = document.createElement('li');
+          const para = document.createElement('p');
+          if (validFileType(file)) {
+            para.textContent = `File name ${file.name}, file size ${returnFileSize(file.size)}.`;
+            const image = document.createElement('img');
+            image.src = URL.createObjectURL(file);
+
+            listItem.appendChild(image);
+            listItem.appendChild(para);
+          } else {
+            para.textContent = `File name ${file.name}: Not a valid file type. Update your selection.`;
+            listItem.appendChild(para);
+          }
+
+          list.appendChild(listItem);
+          list.style = "display:flex; justify-content: space-between; "
+        }
+      }
+    }
+    // https://developer.mozilla.org/en-US/docs/Web/Media/Formats/Image_types
+    const fileTypes = [
+      "image/apng",
+      "image/bmp",
+      "image/gif",
+      "image/jpeg",
+      "image/pjpeg",
+      "image/png",
+      "image/svg+xml",
+      "image/tiff",
+      "image/webp",
+      "image/x-icon"
+    ];
+    function validFileType(file) {
+      return fileTypes.includes(file.type);
+    }
+    function returnFileSize(number) {
+      if (number < 1024) {
+        return number + 'bytes';
+      } else if (number >= 1024 && number < 1048576) {
+        return (number / 1024).toFixed(1) + 'KB';
+      } else if (number >= 1048576) {
+        return (number / 1048576).toFixed(1) + 'MB';
+      }
+    }
+  </script>
   <!-- jQuery first, then Popper.js, then Bootstrap JS -->
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
     integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
