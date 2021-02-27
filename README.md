@@ -3,7 +3,7 @@
 ## Summary
 * Dogs and Cats classification is supposed to be a basic and essential computer vision task for everyone learning deep learning.
 * The task is to create a deep learning model using a pretrained model combined with CNN (Convolutional Neural Networ) and DNN (Dense Neural Network) layers in order to distinguish cat and dog images.
-* As an output of this task, the advantages of pretrained model in computer vision tasks are demonstrated.
+* As an output of this task, the advantages of pretrained model in computer vision tasks are proved.
 * The dataset is downloaded from Kaggle
 https://www.kaggle.com/c/dogs-vs-cats
 
@@ -19,9 +19,5 @@ https://www.kaggle.com/c/dogs-vs-cats
 
 ![](https://i.imgur.com/Moggfwy.png)
 
-
-
-
-
-
-
+## Deploy
+A flask app with HTML/CSS is created to demonstrate the ability to deploy a deep learning model in real life.
